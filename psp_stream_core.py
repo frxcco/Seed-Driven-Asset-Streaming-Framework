@@ -133,33 +133,55 @@ class PSPStreamEngine:
         self.f.close()
 
 # =====================================================================
-# SIMULACIÓN DE STREAMING DE BAJA LATENCIA
+# CLI DE CONTROL DE LABORATORIO (STREAMING AUTOMATIZADO)
 # =====================================================================
 if __name__ == "__main__":
-    # Generemos un archivo de prueba "grande" simulando un asset binario (1 MB de ceros y letras)
-    with open("video_asset.raw", "wb") as f:
-        f.write(b"DATA_CABECERA_FALSA" * 1000)
-        f.write(b"METADATA_CRITICA_OCULTA_EN_EL_MEDIO")
-        f.write(b"DATA_COLA_FALSA" * 1000)
+    import random
 
-    print("1. [Servidor] Empaquetando asset de video en formato estructurado de stream (.psps)...")
-    PSPStreamEngine.empaquetar_asset("video_asset.raw", "video_stream.psps", semilla=999)
-    print("✓ Asset empaquetado. El archivo original puede ser borrado.\n")
-
-    print("2. [Cliente] Inicializando el Framework de Streaming sobre 'video_stream.psps'...")
-    streamer = PSPStreamEngine("video_stream.psps")
-    print(f"   [Info] Detectado asset de {streamer.tamano_total} bytes de masa total.")
-    print(f"   [Info] Tamaño de bloque de red/RAM: {streamer.chunk_size} bytes.\n")
-
-    # Simulamos que un reproductor de video pide un pedazo del medio del archivo
-    # Buscaremos la frase "METADATA_CRITICA_OCULTA_EN_EL_MEDIO"
-    offset_objetivo = 19000  # Saltamos arbitrariamente al medio
-    longitud_lectura = 35    # Solo pedimos 35 bytes
-
-    print(f"3. [Streaming] Ejecutando 'leer_rango()' en offset {offset_objetivo} por {longitud_lectura} bytes...")
-    fragmento_ram = streamer.leer_rango(offset_objetivo, longitud_lectura)
+    # 1. Crear un archivo de prueba "pesado" con datos conocidos en posiciones específicas
+    print("🔬 [Paso 1/4] Creando asset original ('video_asset.raw')...")
     
-    print(f"\n🔥 [Resultado en Pantalla] Fragmento extraído al vuelo de la RAM:")
-    print(f"   👉 {fragmento_ram.decode('utf-8', errors='ignore')}")
+    # Creamos un bloque de 1 Megabyte lleno de ruido de fondo ('A')
+    bloque_ruido = b"A" * 500000
+    # Insertamos un "Huevo de Pascua" de texto exactamente en la mitad
+    huevo_pascua = b"METADATA_CRITICA_OCULTA_EN_EL_MEDIO"
+    offset_exacto_original = len(bloque_ruido)
+    
+    with open("video_asset.raw", "wb") as f:
+        f.write(bloque_ruido)
+        f.write(huevo_pascua)
+        f.write(bloque_ruido)
+        
+    print(f"   ✓ Asset creado. Tamaño: {os.path.getsize('video_asset.raw')} bytes.")
+    print(f"   📌 El mensaje secreto está exactamente en el offset: {offset_exacto_original}\n")
+
+    # 2. Empaquetar y cifrar el archivo usando la Semilla Matemática
+    print("🔐 [Paso 2/4] Ejecutando 'pack' para generar el stream protegido (.psps)...")
+    semilla_laboratorio = 999
+    PSPStreamEngine.empaquetar_asset("video_asset.raw", "game_asset.psps", semilla=semilla_laboratorio)
+    print("   ✓ Archivo empaquetado como 'game_asset.psps'.")
+    
+    # Borramos el archivo original para demostrar que ya no se necesita en el disco
+    os.remove("video_asset.raw")
+    print("   🗑️ Archivo original 'video_asset.raw' ELIMINADO del disco.\n")
+
+    # 3. Inicializar el Streamer de Acceso Aleatorio
+    print("🧠 [Paso 3/4] Inicializando el motor de Streaming en modo lectura...")
+    streamer = PSPStreamEngine("game_asset.psps")
+    print(f"   ✓ Conectado a 'game_asset.psps' ({streamer.tamano_total} bytes).")
+    print(f"   ✓ Memoria RAM en uso por bloque: {streamer.chunk_size // 1024} KB (Constante).\n")
+
+    # 4. Simular la extracción quirúrgica (Streaming Seek)
+    longitud_a_pedir = len(huevo_pascua)
+    print(f"🔥 [Paso 4/4] Buscando fragmento en offset {offset_exacto_original} por {longitud_a_pedir} bytes...")
+    
+    # El motor viaja en el tiempo, genera el ruido de ese bloque específico y extrae la metadata
+    fragmento_ram = streamer.leer_rango(offset_exacto_original, longitud_a_pedir)
+    
+    print("-" * 60)
+    print(f"📥 RESULTADO EXTRAÍDO DIRECTAMENTE DE LA RAM:")
+    print(f"👉 {fragmento_ram.decode('utf-8', errors='ignore')}")
+    print("-" * 60)
     
     streamer.cerrar()
+    print("\n✓ Prueba de laboratorio completada con éxito.")
