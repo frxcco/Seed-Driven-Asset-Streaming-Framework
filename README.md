@@ -10,6 +10,7 @@ Traditional asset delivery systems (like patches, DLCs, or localization builds) 
 
 This framework solves this problem by transforming data distribution into a **computational generation problem**. Instead of shipping a heavy, static asset over the network, the framework streams a compact, mathematically unique mutation key (`.psps`). The runtime then reconstructs the asset chunks **on-the-fly directly into RAM** at CPU execution speeds using a deterministic **Xorshift64 Pseudo-Random Number Generator (PRNG)** bound to an integer seed.
 
+````
 [ Encrypted .psps Stream / Key ]
              │
              ▼ (Instant Header Read)
@@ -30,7 +31,7 @@ RAM Chunks:  [ Inbound .psps Payload Buffer ]  ──► 0x7A 0xD4 0x6C
 ▼
 RAM Stream:  [ Raw Bit-Perfect Asset Output ]  ──► 0x45 0x76 0x75 ("A", "s"...)
 
-
+````
 ---
 
 ## 🔥 Key Technical Capabilities
