@@ -65,6 +65,7 @@ Run the Python pipeline directly from your terminal to simulate high-speed asset
 
 ### 1. Secure & Pack an Asset
 Take a raw file and bind its identity structure to a specific mathematical seed (e.g., `999`):
+
 ```bash
 python3 -m core.psp_stream_core pack main_video.raw game_asset.psps 999
 2. Stream Arbitrary Byte Chunks
@@ -81,6 +82,8 @@ fragment_buffer = streamer.leer_rango(19000, 35)
 
 print(f"Decrypted Asset Fragment in RAM: {fragment_buffer}")
 streamer.cerrar()
+```
+
 🚀 Potential Production Use Cases
 Dynamic Game Localization / DLCs: Ship a shared asset skeleton once. Swap the game experience or UI languages on the fly by swapping micro-keys bound to seeds, saving gigabytes of CDN transfer fees.
 
