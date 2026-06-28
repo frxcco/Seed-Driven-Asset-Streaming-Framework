@@ -1,0 +1,8 @@
+game_asset.psps
+video_asset.raw
+
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
