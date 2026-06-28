@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import time
-from psp_stream_core import PSPStreamEngine
+from core.psp_stream_core import XorshiftSeekable, PSPStreamEngine
 
 # =====================================================================
 # 1. SECRET RETRO GAME SOURCE CODE (Simulated Independent Development)
